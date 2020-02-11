@@ -17,6 +17,7 @@ SRC_DIR_NAME = sys.argv[1]
 
 CERT_BASE_PATH = '/usr/syno/etc/certificate'
 PKG_CERT_BASE_PATH = '/usr/local/etc/certificate'
+NGINX_CERT_PATH = '/volume2/docker/nginx/cert'
 
 ARCHIEV_PATH = CERT_BASE_PATH + '/_archive'
 INFO_FILE_PATH = ARCHIEV_PATH + '/INFO'
@@ -30,6 +31,17 @@ except:
     sys.exit(1)
 
 CP_FROM_DIR = ARCHIEV_PATH + '/' + SRC_DIR_NAME
+print 'begin copy to nginx cert path'
+for f in CERT_FILES:
+    src = CP_FROM_DIR + '/' + f 
+    des = NGINX_CERT_PATH + '/' + f
+    print src, des
+    try:
+        shutil.copy2(src, des)
+    except:
+        print '[WRN] copy from %s to %s fail' %(src, des)
+print 'done nginx cert copy'
+
 for service in services:
     print 'Copy cert for %s' %(service['display_name'])
     if service['isPkg']:
